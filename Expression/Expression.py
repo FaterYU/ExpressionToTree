@@ -49,8 +49,6 @@ class Node:
             return self.l.getHeight()+1
         else:
             return max(self.l.getHeight(),self.r.getHeight())+1
-
-
 class Expression:
     def __init__(self):
         self._expression=self._ReadExpression()
@@ -81,7 +79,6 @@ class Expression:
         tree_stack=Stack()
         while expr.size()>0:
             tree_stack.push(expr.pop())
-        # print(tree_stack.items)
         while tree_stack.size()>0:
             if(tree_stack.top() == '+' or tree_stack.top() == '-' or tree_stack.top() == '*' or tree_stack.top() == '/'):
                 node = Node(tree_stack.top())
@@ -91,14 +88,10 @@ class Expression:
                 tree_stack.pop()
             else:
                 result.push(tree_stack.pop())
-        # print(result.top().getAll())
         return result.top()
     def _AddBox(self,tree,box,level,x,y):
-        # print(x,y)
-        # print(box[x])
         box[y][x]=tree.getVal()
         delta=2**(level-2)*3 if level>1 else 2
-        # print(level,delta)
         for i in range(1,delta):
             box[y+i][x-i]='/'
             box[y+i][x+i]='\\'
@@ -112,15 +105,8 @@ class Expression:
             box[y+delta][x+delta] = tree.getR()
         return box
     def _PrintTree(self,tree):
-        # print(tree.getAll())
-        # print(tree.getHeight())
         boxwidth=2**tree.getHeight()*3-1
         boxheight = 2**(tree.getHeight()-1)*3
-        # print(halfsize)
-        # box=''
-        # box += halfsize*' '+tree.getVal()+halfsize*' '+'\n'
-        # print(box)
-        # box=boxheight*[boxwidth*['@']]
         box=[]
         for i in range(boxheight):
             l=[]
@@ -134,12 +120,3 @@ class Expression:
                 s+=j if j!='@' else ' '
                 # s+=j
             print(s) 
-
-# if __name__=="__main__":
-#     input_str=ReadExpression()
-#     # test_input = '(((1+2)-(3+4))*((5+6)+(7-8)))'
-#     # tree=ExpressionToTree(test_input)
-#     tree=ExpressionToTree(input_str)
-#     PrintTree(tree)
-# expression=Expression()
-# expression.DrawTree()
