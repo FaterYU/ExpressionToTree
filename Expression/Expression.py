@@ -1,3 +1,4 @@
+import re
 class Stack:
     def  __init__(self):
         self.items = []
@@ -50,8 +51,30 @@ class Node:
         else:
             return max(self.l.getHeight(),self.r.getHeight())+1
 class Expression:
+    regex = [
+        '[\+\-\*\/][0-9][\+\-\*\/]+',
+        '\([^\+\-\*\/]\)',
+        '[\+\-\*\/]\([^\(\)]+\)[\+\-\*\/]',
+        '@',
+        '@',
+        '@',
+        '[0-9]\(|\)[0-9]',
+    ]
     def __init__(self):
         self._expression=self._ReadExpression()
+    def Check(self):
+        self.err=[]
+        for i in range(len(self.regex)):
+            # if(isinstance(self.regex[i],list)):
+            #     exp=self._expression
+            #     for j in range(self.regex-1):
+            #         exp=''.join(re.findall(self.regex[j],exp))
+            #     if(re.findall(self.regex[i][-1],exp)):
+            #         self.err.append(i)
+            # else:
+            if(re.findall(self.regex[i],self._expression)):
+                self.err.append(i)
+        return self.err
     def DrawTree(self):
         tree=self._ExpressionToTree(self._expression)
         self._PrintTree(tree)
@@ -118,5 +141,7 @@ class Expression:
             s=''
             for j in i:
                 s+=j if j!='@' else ' '
-                # s+=j
-            print(s) 
+            print(s)
+
+# expression=Expression()
+# print(expression.Check())
