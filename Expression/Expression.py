@@ -52,34 +52,68 @@ class Node:
             return max(self.l.getHeight(),self.r.getHeight())+1
 class Expression:
     regex = [
-        '[\+\-\*\/][0-9][\+\-\*\/]+',
-        '\([^\+\-\*\/]\)',
-        '[\+\-\*\/]\([^\(\)]+\)[\+\-\*\/]',
-        '@',
-        '@',
-        '@',
+        # '[\+\-\*\/][0-9][\+\-\*\/]+',
+        # '\([^\+\-\*\/]\)',
+        # '[\+\-\*\/]\([^\(\)]+\)[\+\-\*\/]',
+        '[\+\-\*\/][0-9][\+\-\*\/]+|\([^\+\-\*\/]\)|[\+\-\*\/]\([^\(\)]+\)[\+\-\*\/]',
         '[0-9]\(|\)[0-9]',
     ]
-    def __init__(self):
-        self._expression=self._ReadExpression()
+    err_msg=[
+        'Not a valid expression, wrong number of operands.',
+        'Not a valid expression, operator missing.',
+        'Not a valid expression, brackets mismatched.'
+    ]
+    def __init__(self,is_reload=False):
+        if(is_reload):
+            if(not self._ReloadExpression()):
+                print('No more expressions to reload.\n')
+        else:
+            self._expression=self._ReadExpression()
     def Check(self):
         self.err=[]
         for i in range(len(self.regex)):
-            # if(isinstance(self.regex[i],list)):
-            #     exp=self._expression
-            #     for j in range(self.regex-1):
-            #         exp=''.join(re.findall(self.regex[j],exp))
-            #     if(re.findall(self.regex[i][-1],exp)):
-            #         self.err.append(i)
-            # else:
             if(re.findall(self.regex[i],self._expression)):
                 self.err.append(i)
-        return self.err
+        if(self._expression[0]!='(' or self._expression[-1]!=')'):
+            self.err.append(2)
+        else:
+            symb=re.findall('[\(\)]',self._expression[1:-1])
+            if(len(symb)%2!=0):
+                self.err.append(2)
+            elif(len(symb)!=0 and (symb[0]==')' or symb[-1]=='(')):
+                self.err.append(2)
+        for i in self.err:
+            print(self.err_msg[i])
+        if(len(self.err)==0):
+            self._SaveTree()
+        return len(self.err)
     def DrawTree(self):
         tree=self._ExpressionToTree(self._expression)
+        print(10*'-','\n',"Expression's value: ",eval(self._expression),'\n',"Expression's tree: \n")
         self._PrintTree(tree)
-    def SaveTree(self):
-        pass
+        print(10*'-')
+    def _SaveTree(self):
+        # with open('Expression.csv','a',newline='') as csvfile:
+        #     writer=csv.writer(f)
+        #     writer.writerow(self._expression)
+        with open('Expression.txt','a') as f:
+            f.write(self._expression+'\n')
+    def _ReloadExpression(self):
+        with open('Expression.txt','r')as f:
+            reader=f.readlines()
+            exp=[]
+            for i in reader:
+                exp.append(re.findall(r'[1-9\(\)\+\-\*\/]+',i))
+            for i in range(len(exp)-1,-1,-1):
+                print('\r', len(exp)-i,' : ', 'Is ', exp[i][0], '? [y/n]:', end='')
+                ans = input()
+                if(ans=='y'):
+                    self._expression=exp[i][0]
+                    print(self._expression)
+                    self.is_reload=True
+                    return 1
+            self.is_reload=False
+            return 0
     def _ReadExpression(self):
         s=input()
         return s
