@@ -1,60 +1,8 @@
 import re
-class Stack:
-    def  __init__(self):
-        self.items = []
-    def push(self, item):
-        self.items.append(item)
-    def top(self):
-        if(self.size()==0):
-            return None
-        else:
-            return self.items[-1]
-    def pop(self):
-        top=self.items[-1]
-        self.items.pop()
-        return top
-    def size(self):
-        return len(self.items)
-class Node:
-    def __init__(self,val):
-        self.val=val
-        self.l=None
-        self.r=None
-    def getVal(self):
-        return self.val
-    def getL(self):
-        return self.l
-    def getR(self):
-        return self.r
-    def setL(self,l):
-        self.l=l
-    def setR(self,r):
-        self.r=r
-    def getAll(self):
-        result=[self.val]
-        if(type(self.l)==str):
-            result.append(self.l)
-        else:
-            result.append(self.l.getAll())
-        if(type(self.r)==str):
-            result.append(self.r)
-        else:
-            result.append(self.r.getAll())
-        return result
-    def getHeight(self):
-        if(isinstance(self.l, str) and isinstance(self.r, str)):
-            return 1
-        elif(isinstance(self.l, str) and isinstance(self.r, Node)):
-            return self.r.getHeight()+1
-        elif(isinstance(self.l, Node) and isinstance(self.r, str)):
-            return self.l.getHeight()+1
-        else:
-            return max(self.l.getHeight(),self.r.getHeight())+1
+from Stack.Stack import Stack
+from Node.Node import Node
 class Expression:
     regex = [
-        # '[\+\-\*\/][0-9][\+\-\*\/]+',
-        # '\([^\+\-\*\/]\)',
-        # '[\+\-\*\/]\([^\(\)]+\)[\+\-\*\/]',
         '[\+\-\*\/][0-9][\+\-\*\/]+|\([^\+\-\*\/]\)|[\+\-\*\/]\([^\(\)]+\)[\+\-\*\/]',
         '[0-9]\(|\)[0-9]',
     ]
@@ -90,8 +38,9 @@ class Expression:
     def DrawTree(self):
         tree=self._ExpressionToTree(self._expression)
         print(10*'-','\n',"Expression's value: ",eval(self._expression),'\n',"Expression's tree: \n")
-        self._PrintTree(tree)
+        box=self._PrintTree(tree)
         print(10*'-')
+        return eval(self._expression),box
     def _SaveTree(self):
         # with open('Expression.csv','a',newline='') as csvfile:
         #     writer=csv.writer(f)
@@ -176,6 +125,4 @@ class Expression:
             for j in i:
                 s+=j if j!='@' else ' '
             print(s)
-
-# expression=Expression()
-# print(expression.Check())
+        return box
