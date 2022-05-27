@@ -46,7 +46,7 @@
     python -m unittest ./ExpressionToBinaryTree_test.py
 ```
 
-## File Struct
+## File Structure
 
     ExpressionToTree
     │  Expression.txt

@@ -14,8 +14,8 @@ class Expression:
     err_msg=[
         'Not a valid expression, wrong number of operands.',
         'Not a valid expression, operator missing.',
-        'Not a valid expression, brackets mismatched.',
         'Not a valid expression, expression contains invalid characters.',
+        'Not a valid expression, brackets mismatched.',
         'Not a valid expression, expression should not be empty.'
     ]
     # init function, input or reload the expression
